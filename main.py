@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QTableWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QTableWidget, QWidget
 import sys
 import sqlite3
 
@@ -34,6 +34,20 @@ class App(QMainWindow):
         self.con.commit()
 
     def add(self):
+        a = Add().__init__()
+
+
+class Add(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('add.ui', self)
+        self.pushButton.clicked.connect(self.add)
+        self.con = sqlite3.connect('coffee.sqlite')
+        self.cur = self.con.cursor()
+        self.show()
+    
+    def add(self):
+        print(0)
         s = self.lineEdit_s.text()
         o = self.lineEdit_o.text()
         m = self.lineEdit_m.text()
@@ -43,8 +57,8 @@ class App(QMainWindow):
         res = self.cur.execute("""insert into coffee('Сорт', 'Степень обжарки', 'Молотый/в зернах', 'Описание вкуса', 'Цена', 
         'Объем упаковки') values(?, ?, ?, ?, ?, ?)""", (s, o, m, t, p, v))
         self.con.commit()
-
-        self.initUi()
+        App.initUi(self)
+        self.close()
 
 
 app = QApplication(sys.argv)
